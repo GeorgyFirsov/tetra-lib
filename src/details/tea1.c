@@ -31,7 +31,7 @@ static unsigned char tea1p_sbox[256] = {
 // clang-format on
 
 
-void tea1_initialize_key_register(const tea1_key_t* key, tea1_key_state_t* key_register)
+void tea1_initialize_key_register(const tea1_key* key, tea1_key_state_t* key_register)
 {
     /*
      *           <-------------------------------------------------------
@@ -50,14 +50,11 @@ void tea1_initialize_key_register(const tea1_key_t* key, tea1_key_state_t* key_r
      *              +--------------+---------------------------------+
      */
 
-    uint8_t* internal_key           = (uint8_t*)key;
-    uint32_t* internal_key_register = (uint32_t*)key_register;
-
     for (uint_fast8_t idx = 0; idx < 10; ++idx)
     {
-        *internal_key_register = tea1p_sbox[0xFF & ((*internal_key_register >> 24) ^  // Most significant byte
-                                                    internal_key[idx] ^               // Key byte
-                                                    *internal_key_register)]          // Least significant byte
-                               | (*internal_key_register << 8);                       // Shift key register to the left
+        *key_register = tea1p_sbox[0xFF & ((*key_register >> 24) ^  // Most significant byte
+                                           key->key_bytes[idx] ^    // Key byte
+                                           *key_register)]          // Least significant byte
+                      | (*key_register << 8);                       // Shift key register to the left
     }
 }
