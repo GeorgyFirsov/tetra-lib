@@ -7,6 +7,7 @@
 #include <inttypes.h>
 
 #include "details/tea1.h"
+#include "details/common.h"
 
 
 // clang-format off
@@ -31,7 +32,7 @@ static unsigned char tea1p_sbox[256] = {
 // clang-format on
 
 
-void tea1p_initialize_key_state(TEA1_CONTEXT* context, const TEA1_KEY* key)
+TETRALIB_FORCEINLINE void tea1p_initialize_key_state(TEA1_CONTEXT* context, const TEA1_KEY* key)
 {
     /*
      * Key state initialization:
