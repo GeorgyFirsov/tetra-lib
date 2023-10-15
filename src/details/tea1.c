@@ -86,8 +86,8 @@ TETRALIB_FORCEINLINE void tea1p_initialize_key_state(TEA1_CONTEXT* context, cons
  */
 TETRALIB_FORCEINLINE uint8_t tea1p_filter(uint16_t bytes, const uint16_t* table)
 {
-    uint8_t byte1  = bytes;
-    uint8_t byte2  = bytes >> 8;
+    uint8_t byte1  = (uint8_t)bytes;
+    uint8_t byte2  = (uint8_t)(bytes >> 8);
     uint8_t result = 0;
 
     for (uint_fast8_t i = 0; i < 8; ++i)
