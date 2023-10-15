@@ -132,17 +132,32 @@ TETRALIB_FORCEINLINE uint8_t tea1p_reorder(uint8_t byte)
 void tea1_initialize(TEA1_CONTEXT* context, const TEA1_KEY* key)
 {
     //
-    // All states contain zeros initially
+    // All states contain zeros initially,
+    // gamma generator skips 53 steps before
+    // the first byte is generated
     //
 
-    context->key_state = 0;
-    context->state     = 0;
+    context->key_state  = 0;
+    context->state      = 0;
+    context->skip_steps = 53;
 
     //
     // Initialize key state
     //
 
     tea1p_initialize_key_state(context, key);
+}
+
+
+void tea1_set_iv(TEA1_CONTEXT* context, uint32_t iv)
+{
+    static const uint32_t magic = 0x96724FA1;
+
+    uint32_t low_bytes = iv ^ magic;
+    low_bytes          = (low_bytes << 8) | (low_bytes >> 24);
+
+    uint64_t state = ((uint64_t)iv << 32) | low_bytes;
+    context->state = (state >> 8) | (state << 56);
 }
 
 
@@ -182,4 +197,33 @@ uint8_t tea1_step(TEA1_CONTEXT* context)
     //
 
     return (uint8_t)(context->state >> 56);
+}
+
+
+void tea1_generate_gamma(TEA1_CONTEXT* context, uint64_t gamma_bytes, uint8_t* gamma)
+{
+    //
+    // Between each pair of gamma bytes, generator skips 18 steps
+    //
+
+    static const uint64_t skip_steps = 18;
+
+    for (uint64_t i = 0; i < gamma_bytes; ++i)
+    {
+        //
+        // Skip required number of steps
+        //
+
+        for (uint64_t j = 0; j < context->skip_steps; ++j)
+        {
+            tea1_step(context);
+        }
+
+        //
+        // Generate on gamma byte
+        //
+
+        gamma[i] = tea1_step(context);
+        context->skip_steps = skip_steps;
+    }
 }
