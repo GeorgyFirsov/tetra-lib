@@ -6,11 +6,6 @@
 #include "test_common.hpp"
 
 
-#define INIT_TEST_VECTORS(name, ...) \
-    struct {uint32_t iv; TEA1_KEY key; uint8_t expected_gamma[10];} name [] \
-    = __VA_ARGS__
-
-
 TEST(TEA1, Gamma)
 {
     INIT_TEST_VECTORS(test_vectors, {

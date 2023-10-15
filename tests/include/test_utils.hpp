@@ -8,6 +8,14 @@
 #include <cstddef>
 
 
+/**
+ * @brief Initialize test vectors.
+ */
+#define INIT_TEST_VECTORS(name, ...) \
+    struct {uint32_t iv; TEA1_KEY key; uint8_t expected_gamma[10];} name [] \
+    = __VA_ARGS__
+
+
 namespace test::details {
 
 /**
