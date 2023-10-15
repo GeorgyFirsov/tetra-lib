@@ -29,9 +29,23 @@ static unsigned char tea1p_sbox[256] = {
     0x7C, 0xE9, 0x8C, 0xFE, 0xDC, 0x0F, 0x2D, 0x3C, 0x2E, 0xF6, 0x15, 0x2F, 0xAF, 0xE1, 0xEB, 0x3F,
     0x99, 0x43, 0x13, 0x0B, 0xE0, 0xA5, 0x12, 0x77, 0x5D, 0xB3, 0x38, 0xD9, 0xEF, 0x5A, 0x01, 0x70,
 };
+
+static uint16_t tea1p_filter_table1[8] = {
+    0xDA86, 0x85E9, 0x29B5, 0x2BC6, 0x8C6B, 0x974C, 0xC671, 0x93E2
+};
+
+static uint16_t tea1p_filter_table2[8] = {
+    0x85D6, 0x791A, 0xE985, 0xC671, 0x2B9C, 0xEC92, 0xC62B, 0x9C47
+};
 // clang-format on
 
 
+/**
+ * @brief Initializes key state of the context.
+ * 
+ * @param context cipher context
+ * @param key user-supplied key
+ */
 TETRALIB_FORCEINLINE void tea1p_initialize_key_state(TEA1_CONTEXT* context, const TEA1_KEY* key)
 {
     /*
@@ -55,11 +69,63 @@ TETRALIB_FORCEINLINE void tea1p_initialize_key_state(TEA1_CONTEXT* context, cons
 
     for (uint_fast8_t idx = 0; idx < 10; ++idx)
     {
-        context->key_state = tea1p_sbox[0xFF & ((context->key_state >> 24) ^  // Most significant byte
-                                                key->key_bytes[idx] ^         // Key byte
-                                                context->key_state)]          // Least significant byte
-                           | (context->key_state << 8);                       // Shift key register to the left
+        context->key_state = tea1p_sbox[(uint8_t)((context->key_state >> 24) ^  // Most significant byte
+                                                  key->key_bytes[idx] ^         // Key byte
+                                                  context->key_state)]          // Least significant byte
+                           | (context->key_state << 8);                         // Shift key register to the left
     }
+}
+
+
+/**
+ * @brief Filter function. Its implementation is a bit magical.
+ * 
+ * @param bytes two input bytes
+ * @param table filtering table
+ * @return filtered byte
+ */
+TETRALIB_FORCEINLINE uint8_t tea1p_filter(uint16_t bytes, const uint16_t* table)
+{
+    uint8_t byte1  = bytes;
+    uint8_t byte2  = bytes >> 8;
+    uint8_t result = 0;
+
+    for (uint_fast8_t i = 0; i < 8; ++i)
+    {
+        uint8_t magic = ((byte1 >> 7) & 1) | ((byte1 << 1) & 2) | ((byte2 << 1) & 12);
+
+        if (table[i] & (1 << magic))
+        {
+            result |= 1 << i;
+        }
+
+        byte1 = ((byte1 >> 1) | (byte1 << 7));
+        byte2 = ((byte2 >> 1) | (byte2 << 7));
+    }
+
+    return result;
+}
+
+
+/**
+ * @brief Reorders bits in an input byte.
+ * 
+ * @param byte input byte
+ * @return byte with reordered bits 
+ */
+TETRALIB_FORCEINLINE uint8_t tea1p_reorder(uint8_t byte)
+{
+    uint8_t result = 0;
+
+    result |= ((byte << 6) & 0x40);
+    result |= ((byte << 1) & 0x20);
+    result |= ((byte << 2) & 0x08);
+    result |= ((byte >> 3) & 0x14);
+    result |= ((byte >> 2) & 0x01);
+    result |= ((byte >> 5) & 0x02);
+    result |= ((byte << 4) & 0x80);
+
+    return result;
 }
 
 
@@ -77,4 +143,43 @@ void tea1_initialize(TEA1_CONTEXT* context, const TEA1_KEY* key)
     //
 
     tea1p_initialize_key_state(context, key);
+}
+
+
+uint8_t tea1_step(TEA1_CONTEXT* context)
+{
+    //
+    // Derive non-linear feedback from key state
+    //
+
+    uint8_t sbox_feedback = tea1p_sbox[(uint8_t)((context->key_state >> 24) ^ context->key_state)];
+    context->key_state    = (context->key_state << 8) | sbox_feedback;
+
+    //
+    // Compute two filtered and one reordered feedback
+    // bytes from state
+    //
+
+    uint8_t mix_byte           = tea1p_filter((uint16_t)(context->state >> 8), tea1p_filter_table1);
+    uint8_t filter_feedback    = tea1p_filter((uint16_t)(context->state >> 40), tea1p_filter_table2);
+    uint8_t reordered_feedback = tea1p_reorder((uint8_t)(context->state >> 32));
+    uint8_t state_feedback     = (uint8_t)(context->state >> 56);
+
+    //
+    // Compute total feedback, that will be added to the end of the register
+    //
+
+    uint8_t feedback = (uint8_t)(filter_feedback ^ state_feedback ^ reordered_feedback ^ sbox_feedback);
+
+    //
+    // Update state with feedback and mix
+    //
+
+    context->state = ((context->state << 8) ^ ((uint64_t)mix_byte << 32)) | feedback;
+
+    //
+    // Get gamma byte from the state
+    //
+
+    return (uint8_t)(context->state >> 56);
 }

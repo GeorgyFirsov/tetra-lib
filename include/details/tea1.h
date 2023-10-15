@@ -37,4 +37,33 @@ typedef struct tagTEA1_CONTEXT
  */
 void tea1_initialize(TEA1_CONTEXT* context, const TEA1_KEY* key);
 
+
+/**
+ * @brief Performs one gamma generator step.
+ * 
+ * Note, that TEA1 skips 54 steps in the beginning and 19 steps
+ * between each pair of subsequent gamma bytes used for encryption! 
+ * I.e. the following algorithm implements actual TEA1 encryption:
+ * 
+ * ```c
+ * int skip_rounds = 19;
+ * 
+ * for (int i = 0; i < 54 - skip_rounds; ++i)
+ *     tea1_step(&context);
+ * 
+ * for (int i = 0; i < plaintext_length; ++i)
+ * {
+ *     uint8_t gamma = 0;
+ *     for (int j = 0; j < skip_rounds; ++j)
+ *         gamma = tea1_step(&context);
+ * 
+ *     ciphertext[i] = plaintext[i] ^ gamma;
+ * }
+ * ```
+ * 
+ * @param context cipher context
+ * @return key stream byte
+ */
+uint8_t tea1_step(TEA1_CONTEXT* context);
+
 #endif  // !TETRALIB_TEA1_INCLUDED
