@@ -106,10 +106,12 @@ if (TETRALIB_BUILD_LIB)
     # Source files
     #
     set(TETRALIB_SOURCE_FILES                       ${TETRALIB_DETAILS_SOURCES_DIR}/tea1.c
-                                                    ${TETRALIB_DETAILS_SOURCES_DIR}/tea2.c)
+                                                    ${TETRALIB_DETAILS_SOURCES_DIR}/tea2.c
+                                                    ${TETRALIB_DETAILS_SOURCES_DIR}/tea3.c)
 
     set(TETRALIB_HEADER_FILES                       ${TETRALIB_DETAILS_INCLUDE_DIR}/tea1.h
-                                                    ${TETRALIB_DETAILS_INCLUDE_DIR}/tea2.h)
+                                                    ${TETRALIB_DETAILS_INCLUDE_DIR}/tea2.h
+                                                    ${TETRALIB_DETAILS_INCLUDE_DIR}/tea3.h)
 
     set(TETRALIB_SOURCES                            ${TETRALIB_SOURCE_FILES}
                                                     ${TETRALIB_HEADER_FILES})

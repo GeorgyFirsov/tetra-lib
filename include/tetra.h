@@ -12,5 +12,6 @@
 
 #include "details/tea1.h"
 #include "details/tea2.h"
+#include "details/tea3.h"
 
 #endif  // !TETRALIB_TETRA_INCLUDED
