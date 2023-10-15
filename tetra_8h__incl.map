@@ -1,0 +1,7 @@
+<map id="include/tetra.h" name="include/tetra.h">
+<area shape="rect" id="node1" title="TETRA library main header." alt="" coords="137,5,253,32"/>
+<area shape="rect" id="node2" href="$tea1_8h.html" title="TEA1 algorithm functions." alt="" coords="5,80,116,107"/>
+<area shape="rect" id="node4" href="$tea2_8h.html" title="TEA2 algorithm functions." alt="" coords="140,80,251,107"/>
+<area shape="rect" id="node5" href="$tea3_8h.html" title="TEA3 algorithm functions." alt="" coords="275,80,385,107"/>
+<area shape="rect" id="node3" title=" " alt="" coords="152,155,239,181"/>
+</map>
