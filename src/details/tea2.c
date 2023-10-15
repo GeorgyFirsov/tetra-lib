@@ -128,7 +128,7 @@ uint8_t tea2_step(TEA2_CONTEXT* context)
     // Derive non-linear feedback from key state
     //
 
-    uint8_t sbox_feedback = tea2p_sbox[(uint8_t)(context->key_state[0] ^ context->key_state[7])];
+    uint8_t sbox_feedback = tea2p_sbox[context->key_state[0] ^ context->key_state[7]];
     memmove(context->key_state, context->key_state + 1, TEA2_KEY_STATE_SIZE - 1);
     context->key_state[TEA2_KEY_STATE_SIZE - 1] = sbox_feedback;
 

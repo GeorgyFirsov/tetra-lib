@@ -69,20 +69,20 @@ void tea2_set_iv(TEA2_CONTEXT* context, uint32_t iv);
 /**
  * @brief Performs one gamma generator step.
  * 
- * Note, that TEA1 skips 50 steps in the beginning and 18 steps
+ * Note, that TEA2 skips 50 steps in the beginning and 18 steps
  * between each pair of subsequent gamma bytes used for encryption! 
- * I.e. the following algorithm implements actual TEA1 encryption:
+ * I.e. the following algorithm implements actual TEA2 encryption:
  * 
  * ```c
  * int skip_rounds = 18;
  * 
  * for (int i = 0; i < 50 - skip_rounds; ++i)
- *     tea1_step(&context);
+ *     tea2_step(&context);
  * 
  * for (int i = 0; i < plaintext_length; ++i)
  * {
  *     for (int j = 0; j < skip_rounds; ++j)
- *         tea1_step(&context);
+ *         tea2_step(&context);
  * 
  *     ciphertext[i] = plaintext[i] ^ tea2_step(&context);
  * }
