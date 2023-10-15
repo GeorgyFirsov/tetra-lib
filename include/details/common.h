@@ -42,6 +42,6 @@
  * @brief Get n-th byte of some number interpreted as byte array.
  */
 #define TETRALIB_NTH_BYTE(number, n) \
-    (((const uint8_t*)(number))[n])
+    (((const uint8_t*)(&number))[n])
 
 #endif  // !TETRALIB_UTILS_INCLUDED
