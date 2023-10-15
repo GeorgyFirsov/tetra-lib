@@ -14,11 +14,23 @@ extern "C" {
 
 
 /**
+ * @brief TEA2 key size in bytes.
+ */
+#define TEA2_KEY_SIZE 10
+
+
+/**
+ * @brief TEA2 internal key state size in bytes.
+ */
+#define TEA2_KEY_STATE_SIZE 10
+
+
+/**
  * @brief Key type for TEA2. The algorithm has 80 bit key.
  */
 typedef struct tagTEA2_KEY
 {
-    uint8_t key_bytes[10];
+    uint8_t key_bytes[TEA2_KEY_SIZE];
 } TEA2_KEY;
 
 
@@ -30,9 +42,9 @@ typedef struct tagTEA2_KEY
  */
 typedef struct tagTEA2_CONTEXT
 {
-    uint8_t key_state[10]; /**< Internal key state */
-    uint64_t state;        /**< Internal shift register state */
-    uint64_t skip_steps;   /**< Number of steps to skip before next gamma byte output */
+    uint8_t key_state[TEA2_KEY_STATE_SIZE]; /**< Internal key state */
+    uint64_t state;                         /**< Internal shift register state */
+    uint64_t skip_steps;                    /**< Number of steps to skip before next gamma byte output */
 } TEA2_CONTEXT;
 
 

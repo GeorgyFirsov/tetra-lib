@@ -67,7 +67,7 @@ TETRALIB_FORCEINLINE void tea1p_initialize_key_state(TEA1_CONTEXT* context, cons
      *              +--------------+---------------------------------+
      */
 
-    for (uint_fast8_t idx = 0; idx < 10; ++idx)
+    for (uint_fast8_t idx = 0; idx < TEA1_KEY_SIZE; ++idx)
     {
         context->key_state = tea1p_sbox[(uint8_t)((context->key_state >> 24) ^  // Most significant byte
                                                   key->key_bytes[idx] ^         // Key byte

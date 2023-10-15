@@ -104,7 +104,7 @@ void tea2_initialize(TEA2_CONTEXT* context, const TEA2_KEY* key)
     // register is just a copy of a key
     //
 
-    memcpy(context->key_state, key, sizeof(context->key_state));
+    memcpy(context->key_state, key, TEA2_KEY_SIZE);
     context->state      = 0;
     context->skip_steps = 50;
 }
@@ -129,8 +129,8 @@ uint8_t tea2_step(TEA2_CONTEXT* context)
     //
 
     uint8_t sbox_feedback = tea2p_sbox[(uint8_t)(context->key_state[0] ^ context->key_state[7])];
-    memmove(context->key_state, context->key_state + 1, 9);
-    context->key_state[9] = sbox_feedback;
+    memmove(context->key_state, context->key_state + 1, TEA2_KEY_STATE_SIZE - 1);
+    context->key_state[TEA2_KEY_STATE_SIZE - 1] = sbox_feedback;
 
     //
     // Compute two filtered and one reordered feedback

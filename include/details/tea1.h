@@ -14,11 +14,17 @@ extern "C" {
 
 
 /**
+ * @brief TEA1 key size in bytes.
+ */
+#define TEA1_KEY_SIZE 10
+
+
+/**
  * @brief Key type for TEA1. The algorithm has 80 bit key.
  */
 typedef struct tagTEA1_KEY
 {
-    uint8_t key_bytes[10];
+    uint8_t key_bytes[TEA1_KEY_SIZE];
 } TEA1_KEY;
 
 
