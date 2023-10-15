@@ -19,7 +19,8 @@ set(TETRALIB_TESTS_INCLUDE_DIRECTORIES	            ${TETRALIB_INCLUDE_DIRECTORIE
 #
 # Sources and headers
 #
-set(TETRALIB_SOURCE_FILES                           ${TETRALIB_TESTS_CASES}/tea1.cpp)
+set(TETRALIB_SOURCE_FILES                           ${TETRALIB_TESTS_CASES}/tea1.cpp
+                                                    ${TETRALIB_TESTS_CASES}/tea2.cpp)
 
 set(TETRALIB_HEADER_FILES                           ${TETRALIB_TESTS_INCLUDE}/test_common.hpp
                                                     ${TETRALIB_TESTS_INCLUDE}/test_utils.hpp)

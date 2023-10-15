@@ -3,7 +3,6 @@
  * @brief TETRA library main header.
  */
 
-
 #ifndef TETRALIB_TETRA_INCLUDED
 #define TETRALIB_TETRA_INCLUDED
 
@@ -12,5 +11,6 @@
 //
 
 #include "details/tea1.h"
+#include "details/tea2.h"
 
 #endif  // !TETRALIB_TETRA_INCLUDED
