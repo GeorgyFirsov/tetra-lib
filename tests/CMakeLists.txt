@@ -49,3 +49,12 @@ target_link_libraries(tetra-lib-test PRIVATE        GTest::gtest_main)
 #
 add_test(NAME tetra-lib-test 
          COMMAND tetra-lib-test)
+
+#
+# Create code coverage reporting script
+#
+string(REPLACE "/" "\\" TETRALIB_COV_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+configure_file(${TETRALIB_TESTS_COVERAGE}/coverage.cmd.in
+               ${CMAKE_BINARY_DIR}/coverage.cmd
+               @ONLY)
