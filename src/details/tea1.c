@@ -31,9 +31,11 @@ static unsigned char tea1p_sbox[256] = {
 // clang-format on
 
 
-void tea1_initialize_key_register(const tea1_key* key, tea1_key_state_t* key_register)
+void tea1p_initialize_key_state(TEA1_CONTEXT* context, const TEA1_KEY* key)
 {
     /*
+     * Key state initialization:
+     *
      *           <-------------------------------------------------------
      *           +----+----+----+----+----+----+----+----+----+----+----+
      *  eck      |  0 |  1 |  2 |  3 |  4 |  5 |  6 |  7 |  8 |  9 | 10 |
@@ -52,9 +54,26 @@ void tea1_initialize_key_register(const tea1_key* key, tea1_key_state_t* key_reg
 
     for (uint_fast8_t idx = 0; idx < 10; ++idx)
     {
-        *key_register = tea1p_sbox[0xFF & ((*key_register >> 24) ^  // Most significant byte
-                                           key->key_bytes[idx] ^    // Key byte
-                                           *key_register)]          // Least significant byte
-                      | (*key_register << 8);                       // Shift key register to the left
+        context->key_state = tea1p_sbox[0xFF & ((context->key_state >> 24) ^  // Most significant byte
+                                                key->key_bytes[idx] ^         // Key byte
+                                                context->key_state)]          // Least significant byte
+                           | (context->key_state << 8);                       // Shift key register to the left
     }
+}
+
+
+void tea1_initialize(TEA1_CONTEXT* context, const TEA1_KEY* key)
+{
+    //
+    // All states contain zeros initially
+    //
+
+    context->key_state = 0;
+    context->state     = 0;
+
+    //
+    // Initialize key state
+    //
+
+    tea1p_initialize_key_state(context, key);
 }

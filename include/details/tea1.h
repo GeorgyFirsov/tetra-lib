@@ -13,23 +13,28 @@
 /**
  * @brief Key type for TEA1. The algorithm has 80 bit key.
  */
-typedef struct tag_tea1_key {
+typedef struct tagTEA1_KEY
+{
     uint8_t key_bytes[10];
-} tea1_key;
+} TEA1_KEY;
 
 
 /**
- * @brief Key state for TEA1.
+ * @brief TEA1 cipher context.
  */
-typedef uint32_t tea1_key_state_t;
+typedef struct tagTEA1_CONTEXT
+{
+    uint32_t key_state; /**< */
+    uint64_t state;     /**< */
+} TEA1_CONTEXT;
 
 
 /**
  * @brief Key register initialization function.
  * 
+ * @param context cipher context
  * @param key user-supplied key
- * @param key_register output register (MUST contain all zeros)
  */
-void tea1_initialize_key_register(const tea1_key* key, tea1_key_state_t* key_register);
+void tea1_initialize(TEA1_CONTEXT* context, const TEA1_KEY* key);
 
 #endif  // !TETRALIB_TEA1_INCLUDED
