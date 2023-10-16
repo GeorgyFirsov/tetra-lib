@@ -56,7 +56,7 @@ TETRALIB_FORCEINLINE uint8_t tea3p_filter(uint16_t bytes, const uint16_t* table)
 
     for (uint_fast8_t i = 0; i < 8; ++i)
     {
-        uint8_t magic = ((byte1 >> 5) & 3) | ((byte2 >> 3) & 12);;
+        uint8_t magic = ((byte1 >> 5) & 3) | ((byte2 >> 3) & 12);
 
         if (table[i] & (1 << magic))
         {
@@ -137,7 +137,7 @@ uint8_t tea3_step(TEA3_CONTEXT* context)
     uint8_t filter_feedback    = tea3p_filter((uint16_t)(context->state >> 8), tea3p_filter_table1);
     uint8_t mix_byte           = tea3p_filter((uint16_t)(context->state >> 40), tea3p_filter_table2);
     uint8_t reordered_feedback = tea3p_reorder((uint8_t)(context->state >> 32));
-    uint8_t state_feedback    = (uint8_t)(context->state >> 56);
+    uint8_t state_feedback     = (uint8_t)(context->state >> 56);
 
     //
     // Compute total feedback, that will be added to the end of the register
